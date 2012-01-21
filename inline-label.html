@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html lang='en-US'>
+<head>
+    <meta charset='UTF-8'>
+    <title>jQuery Inline Label Form</title>
+
+    <style>
+    body {
+        margin: 0; padding: 0; font: 15px/22px arial;
+        background: #EFEFEF;
+    }
+    .box {
+        border: 2px solid #DDD;
+        border-radius: 10px;
+        background: #FFF;
+        padding: 30px 40px;
+        width: 320px;
+        margin: 40px auto;
+        overflow: hidden;
+        box-shadow: 0 0 8px #DDD;
+    }
+    input[type=text] {
+        display: block;
+        width: 310px;
+        border: 1px solid #DDD;
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 8px;
+        margin: 0 0 8px 0;
+        box-shadow: 2px 2px 3px #F5F5F5 inset;
+        color: #550;
+    }
+    input[type=text]:focus {
+        border-color: #FCDB58;
+        box-shadow: 0 0 3px rgba(248, 205, 30, 0.6);
+        background: #FFFFF5;
+    }
+    input[type=submit] {
+        padding: 8px 30px;
+        border: 1px solid #DDD;
+        border-radius: 15px;
+        background: -moz-linear-gradient(90deg, #DDD, #FFF);
+        color: #555;
+        text-shadow: 1px 1px 0 #FFF;
+        cursor: pointer;
+        float: right;
+    }
+    input[type=submit]:hover {
+        background: -moz-linear-gradient(90deg, #DDD, #FFF);
+    }
+    input[type=submit]:active {
+        background: -moz-linear-gradient(-90deg, #DDD, #FFF);
+    }
+    .box a {
+        margin-right: 10px;
+        color: #3E9FDD;
+        float: right;
+        line-height: 40px;
+    }
+    .box a:hover {
+        color: #F69920;
+    }
+    </style>
+
+    <script type='text/javascript' src='jquery.js'></script>
+    <script type='text/javascript'>
+        $(function() {
+            $.fn.unselectable = function() {
+                return this.each(function() {
+                    $(this).css({
+                        '-ms-user-select':'none',
+                        '-moz-user-select':'none',
+                        '-webkit-user-select':'none',
+                        'user-select':'none'
+                    }).attr('unselectable', 'on');
+                });
+            }
+
+            $.fn.selectable = function() {
+                return this.each(function() {
+                    $(this).css({
+                        '-ms-user-select':'text',
+                        '-moz-user-select':'text',
+                        '-webkit-user-select':'text',
+                        'user-select':'text'
+                    }).attr('unselectable', 'off');
+                });
+            }
+
+            $('.box input[type=text]').each(function() {
+                $(this).val( $(this).data('label') )
+                    .unselectable()
+                    .css('color', '#A1A1A1')
+                    .data('state', 'nodata')
+                    .focus(function() {
+                        if( $(this).data('state') == 'nodata' ) {
+                            $(this).css('color', '#CCC');
+                            this.selectionStart = 0;
+                            this.selectionEnd = 0;
+                        } else {
+                            $(this).selectable();
+                        }
+                    }).blur(function() {
+                        if( $(this).val() == '' ) {
+                            $(this).data('state', 'nodata');
+                        }
+
+                        if( $(this).data('state') == 'nodata' ) {
+                            $(this).css('color', '#A1A1A1')
+                                .val( $(this).data('label') )
+                                .unselectable();
+                        }
+                    }).keydown(function(e) {
+                        if( $(this).data('state') == 'nodata' ) {
+                            $(this).val('').data('state', 'data')
+                                .css('color', '#550')
+                                .selectable();
+                        }
+                    });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class='box'>
+        <input type='text' data-label='First Name' />
+        <input type='text' data-label='Last Name' />
+        <input type='text' data-label='Your Email' />
+        <br />
+        <input type='submit' value='Save' />
+        <a href='#'>Cancel</a>
+    </div>
+</body>
+</html>
+
